@@ -1,0 +1,53 @@
+{
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "terms": {
+            "id": [
+              "55ab48c2177c4e87abce41bc4d3462e6",
+              "20ab93835e3a4bb89823e38490f5669d"
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "aggregations": {
+    "properties-filter": {
+      "filter": {"terms": {"manufacturerId": ["a302b910015148fe854066999d1d73a3", "e5e9de3e1e9c49e59107a2ad76e28146"]}},
+      "aggregations": {
+        "properties-filter": {
+          "nested": {"path": "manufacturer"},
+          "aggregations": {
+            "properties-filter": {
+              "filter": {"terms": {"manufacturer.id": ["a302b910015148fe854066999d1d73a3","e5e9de3e1e9c49e59107a2ad76e28146"]}},
+              "aggregations": {
+                "properties-filter": {
+                  "reverse_nested": {},
+                  "aggregations": {
+                    "properties-filter": {
+                      "nested": {"path": "properties"},
+                      "aggregations": {
+                        "properties-filter": {
+                          "filter": {"terms": {"properties.groupId": ["d117fa92258b4519a5eced4f77016a40"]}},
+                          "aggregations": {
+                            "reverse_nested": {},
+                            "aggregations": {
+                              "properties": {"terms": {"field": "properties.id","size": 10000}}
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "size": 0
+}

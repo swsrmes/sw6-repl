@@ -1,0 +1,9 @@
+[
+  {
+    "action": "delete",
+    "entity": "product_configurator_setting",
+    "payload": [
+      { "id":  "product_configurator_setting.id value"}
+    ]
+  }
+]

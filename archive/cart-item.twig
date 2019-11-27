@@ -1,0 +1,148 @@
+{% set label = lineItem.label|trans|sw_sanitize %}
+{% set label = label !== '' ? label : lineItem.label %}
+
+{% if displayMode is not defined %}
+    {% set displayMode = 'default' %}
+{% endif %}
+
+{% set remove_button = '' %}
+{
+{% if displayMode !== 'order' %}
+    {% set remove_button %}
+        <div class="cart-item-remove">
+            {% if lineItem.removable and nestingLevel < 1 %}
+                {% sw_include '@Storefront/storefront/page/checkout/cart-item/element/remove.html.twig' %}
+            {% endif %}
+        </div>
+    {% endset %}
+{% endif %}
+
+
+{% block page_checkout_cart_item_type_product %}
+    <div class="cart-item cart-item-{{ lineItem.type }} is-{{ displayMode }}{% if displayMode === 'offcanvas' %} js-cart-item{% endif %}">
+        <div class="row cart-item-row">
+            <div class="cart-item-info">
+                <div class="row cart-item-row">
+
+                    {% if nestingLevel < 1 %}
+                        <div class="col-auto cart-item-info-img">
+                            <div class="cart-item-img-container">
+                                <a href="{{ seoUrl('frontend.detail.page', {'productId': lineItem.referencedId }) }}"
+                                   class="cart-item-img-link"
+                                   title="{{ label }}"
+                                        {% if controllerAction is same as('confirmPage') %}
+                                            data-toggle="modal"
+                                            data-modal-class="quickview-modal"
+                                            data-url="{{ path('widgets.quickview.minimal', { 'productId': lineItem.referencedId }) }}"
+                                        {% endif %}
+                                >
+                                    {% if lineItem.cover.url %}
+                                        {% sw_thumbnails 'cart-item-img-thumbnails' with {
+                                            media: lineItem.cover,
+                                            sizes: {
+                                                'default': '100px'
+                                            },
+                                            attributes: {
+                                                'class': 'img-fluid cart-item-img',
+                                                'alt': (lineItem.cover.translated.alt ?: ''),
+                                                'title': (lineItem.cover.translated.title ?: '')
+                                            }
+                                        } %}
+                                    {% else %}
+                                        {% sw_icon 'placeholder' style {
+                                            'size': 'fluid'
+                                        } %}
+                                    {% endif %}
+                                </a>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <div class="cart-item-details">
+                        <div class="cart-item-details-container">
+                            {% sw_include '@Storefront/storefront/page/checkout/cart-item/element/label.html.twig' with {
+                                productLink: true
+                            } %}
+
+                            {% if lineItem.payload.options is not empty %}
+                                {% sw_include '@Storefront/storefront/page/checkout/cart-item/element/variant-characteristics.html.twig' %}
+                            {% endif %}
+
+                            {% if lineItem.payload.features is not empty %}
+                                {% sw_include '@Storefront/storefront/component/product/feature/list.html.twig' with {
+                                    'features': lineItem.payload.features
+                                } %}
+                            {% endif %}
+
+                            {% if lineItem.payload.productNumber %}
+                                <div class="cart-item-ordernumber">
+                                    {{ "checkout.cartItemInfoId"|trans|sw_sanitize }} {{ lineItem.payload.productNumber }}
+                                </div>
+                            {% endif %}
+
+                            {% if config('core.cart.showDeliveryTime') %}
+                                {% sw_include '@Storefront/storefront/page/checkout/cart-item/element/delivery-date.html.twig' %}
+                            {% endif %}
+
+                            {% if config('core.cart.wishlistEnabled') %}
+                                {% sw_include '@Storefront/storefront/component/product/card/wishlist.html.twig' with {
+                                    showText: true,
+                                    size: 'sm',
+                                    productId: lineItem.referencedId
+                                } %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cart-item-quantity">
+                {% sw_include '@Storefront/storefront/page/checkout/cart-item/element/quantity.html.twig' %}
+            </div>
+
+            {% if showTaxPrice %}
+                {% if context.salesChannel.taxCalculationType == 'horizontal' %}
+                    <div class="cart-item-tax-price">
+                        {% block page_checkout_item_tax_price_label %}
+                            <div class="cart-item-tax-price-label">
+                                {% if context.taxState == "gross" %}
+                                    {{ "checkout.cartHeaderTaxIncludeVat"|trans|sw_sanitize }}
+                                {% else %}
+                                    {{ "checkout.cartHeaderTaxExcludeVat"|trans|sw_sanitize }}
+                                {% endif %}
+                            </div>
+                        {% endblock %}
+
+                        {% block page_checkout_item_tax_price_inner %}
+                            {% for calculatedTax in lineItem.price.calculatedTaxes %}
+                                {{ calculatedTax.tax|currency }}
+                                <br>
+                            {% endfor %}
+                        {% endblock %}
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="cart-item-unit-price">
+                    <div class="cart-item-unit-price-label">
+                        {{ "checkout.cartHeaderUnitPrice"|trans|sw_sanitize }}
+                    </div>
+
+                    {{ lineItem.price.unitPrice|currency }}{{ "general.star"|trans|sw_sanitize }}
+                </div>
+            {% endif %}
+
+            <div class="cart-item-total-price">
+                <div class="cart-item-total-price-label">
+                    {{ "checkout.cartHeaderTotalPrice"|trans|sw_sanitize }}
+                </div>
+
+                {# Shipping costs discounts always have a price of 0, which might be confusing, therefore we do not show those #}
+                {% if lineItem.payload.discountScope != 'delivery' %}
+                    {{ lineItem.price.totalPrice|currency }}{{ "general.star"|trans|sw_sanitize }}
+                {% endif %}
+            </div>
+
+            {{ remove_button }}
+        </div>
+    </div>
+{% endblock %}

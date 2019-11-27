@@ -1,0 +1,45 @@
+{
+  "productNumber": "p1",
+  "id": "b07fa203034f4ff2a5d847bf942610ec",
+  "name": "p1",
+  "tax": {
+    "id": "0920974c874c466298e571b96aad281d",
+    "name": "test",
+    "taxRate": 15
+  },
+  "active": true,
+  "price": {
+    "default": {
+      "gross": 100,
+      "net": 86.95652173913044,
+      "linked": false,
+      "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca"
+    }
+  },
+  "stock": 1,
+  "isCloseout": false,
+  "media": [
+    {
+      "id": "298d622f26f14779afc3653d7a3ad4e4",
+      "position": -1,
+      "media": {
+        "fileName": "cover-image"
+      }
+    },
+    {
+      "id": "60e519d521084c8c995eff90adb02fd6",
+      "position": 0,
+      "media": {
+        "fileName": "first-image"
+      }
+    },
+    {
+      "id": "3e9c3160f7844aea836fbf56d992df26",
+      "position": 0,
+      "media": {
+        "fileName": "second-image"
+      }
+    }
+  ],
+  "coverId": "298d622f26f14779afc3653d7a3ad4e4"
+}

@@ -1,0 +1,35 @@
+[
+  {
+    "id": "produc-id",
+    "cover": {
+      "id": "d"
+    },
+    "media": [
+      { "id":  "a", },
+      { "id":  "b", },
+      { "id":  "c", }
+    ]
+  },
+
+
+  {
+    "id": "produc-id",
+    "coverId": "d",
+  },
+  {
+    "entity": "media",
+    "id": "a"
+  },
+  {
+    "entity": "media",
+    "id": "b"
+  },
+  {
+    "entity": "media",
+    "id": "c"
+  },
+  {
+    "entity": "media",
+    "id": "d"
+  }
+]

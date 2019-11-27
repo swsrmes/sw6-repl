@@ -1,0 +1,11 @@
+
+{% block main %}
+    {% set params = array_facade({
+        url: 'frontend.detail.page'
+    }) %}
+
+    {% block main_params %}{% endblock %}
+
+    <h1>{{ params.url }}</h1>
+{% endblock %}
+

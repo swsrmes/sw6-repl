@@ -1,0 +1,9 @@
+{% if hook.action === 'build-cache-key' %}
+    {% do hook.setCacheKey('....') %}
+
+    {% return %}
+{% endif %}
+
+{% do data = services.repository.search('....') %}
+
+{% do hook.setResponse('....') %}

@@ -1,0 +1,52 @@
+{% block product_price_calculation %}
+    {% do product.prices({
+        'price': [
+            { from: 1, to: 10, gross: 100 }
+        ],
+        'short_hand': services.price.calculate(priceCollection)
+        'variants': services.price.calculate({gross: 100, net: 100}),
+    }) %}
+
+    {#  i have a list of discounts for specific products  #}
+    {% set discounts = services.repository.search('my_discount', { ids: product.ids }) %}
+
+    {% foreach discounts as discount %}
+        {# add support for surcharge too %}#}
+        {% set product = products.get(discount.productId) %}
+
+        {# short hand to reduce product.price and product.prices #}
+        {% do product.discount(discount.value) %}
+
+        {#  FUTURE: #}
+        {% do product.price.discount(discount.value) %}
+
+        {# includes all prices which matches a quantity of 5 #}
+            {# 1-20 |  1-5 | 1-~ #}
+        {% do product.prices.from(5).discount(value) %}
+
+        {# duplicates the price which matches the quantity of 5 and creates a new graduation #}
+        {% do product.prices.create(5, 10).discount(value) %}
+    {% endforeach %}
+
+
+    {# i have a list of prices for each product #}
+    {% set prices = services.repository.search('my_prices', { ids: product.ids }) %}
+
+    {% foreach prices as price %}
+        {% set product = products.get(price.productId) %}
+
+        {% set product.price.overwrite(price.value) %}
+
+        {% set product.prices.clear() %}
+
+        {% set product.cheapestPrice.clear() %}
+
+        {% set product.price.overwrite({
+            'price': price.value,
+            'prices': price.prices,
+            'cheapest': price.cheapest
+        }) %}
+
+    {% endforeach %}
+
+{% endblock %}
