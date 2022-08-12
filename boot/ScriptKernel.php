@@ -12,7 +12,15 @@ class ScriptKernel extends \Shopware\Core\Kernel
             }
             $definition->setPublic(true);
         }
-
         return $container;
+    }
+
+//    public function registerBundles()
+//    {
+//        return require __DIR__ .'/../../../config/bundles.php';
+//    }
+    public function getProjectDir()
+    {
+        return __DIR__ . '/../../..';
     }
 }

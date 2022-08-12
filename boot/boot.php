@@ -3,7 +3,12 @@
 use Shopware\Core\HttpKernel;
 use Symfony\Component\Dotenv\Dotenv;
 
-$classLoader = require __DIR__.'/../../../vendor/autoload.php';
+$classLoaderPath = $argv[1];
+
+if (empty($classLoaderPath)) {
+    throw new \Exception("vendor/autoload.php not found");
+}
+$classLoader = require $classLoaderPath;
 
 require __DIR__ . '/ScriptKernel.php';
 require __DIR__ . '/api.php';

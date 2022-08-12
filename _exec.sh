@@ -1,5 +1,18 @@
 #!/usr/bin/env bash
 
+script_path="$(readlink -f "${BASH_SOURCE[0]}")"
+script_dir="$(dirname $script_path)"
+. "$script_dir/funcs.sh"
+
+handler() {
+  echo 'Failed to execute php script';
+  trap - INT
+
+  exit 1
+
+}
+trap handler INT
+
 export APP_ENV=prod
 
 SCRIPT='_test'
@@ -15,11 +28,16 @@ fi
 
 echo "execute ${SCRIPT} in ${THREADS} threads"
 
-for x in $(seq 1 ${THREADS}); do
-  php "${SCRIPT}.php" 2>&1 &
+set -e
+
+for _ in $(seq 1 "${THREADS}");
+do
+  background "$$" php "$script_dir/${SCRIPT}.php" "$(getPHPAutoloaderPath)" 2>&1 &
 done
 
-echo Working ... wait oliver
+set +e
+
+echo Working ... wait $USER
 
 wait
 
