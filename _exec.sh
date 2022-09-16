@@ -1,16 +1,18 @@
 #!/usr/bin/env bash
 
-script_path="$(readlink -f "${BASH_SOURCE[0]}")"
-script_dir="$(dirname $script_path)"
-. "$script_dir/funcs.sh"
+EXECUTION_DIR=$(dirname "$0");
+SCRIPT_PATH=$(readlink -f "${BASH_SOURCE[0]}")
+SCRIPT_DIR=$(dirname "$SCRIPT_PATH")
+. "$SCRIPT_DIR/funcs.sh"
+autoloader=$(getPHPAutoloaderPath "$EXECUTION_DIR");
 
 handler() {
   echo 'Failed to execute php script';
   trap - INT
 
   exit 1
-
 }
+
 trap handler INT
 
 export APP_ENV=prod
@@ -32,7 +34,7 @@ set -e
 
 for _ in $(seq 1 "${THREADS}");
 do
-  background "$$" php "$script_dir/${SCRIPT}.php" "$(getPHPAutoloaderPath)" 2>&1 &
+  background "$$" php "$SCRIPT_DIR/${SCRIPT}.php" "$autoloader" "$EXECUTION_DIR" 2>&1 &
 done
 
 set +e

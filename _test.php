@@ -9,7 +9,6 @@ class Main extends BaseScript
 {
     public function run()
     {
-
     }
 }
 
